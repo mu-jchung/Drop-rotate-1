@@ -10,6 +10,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class Drop implements ApplicationListener {
 	private Texture dropImage;
+	private Sprite dropSprite; // Drop-rotate-1
 	private Texture bucketImage;
 	private Sound dropSound;
 	private Music rainMusic;
@@ -33,6 +35,9 @@ public class Drop implements ApplicationListener {
 		// load the images for the droplet and the bucket, 64x64 pixels each
 		dropImage = new Texture(Gdx.files.internal("droplet.png"));
 		bucketImage = new Texture(Gdx.files.internal("bucket.png"));
+
+		// Drop-rotate-1
+		dropSprite = new Sprite(dropImage);
 
 		// load the drop sound effect and the rain background "music"
 		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
@@ -69,7 +74,11 @@ public class Drop implements ApplicationListener {
 		batch.begin();
 		batch.draw(bucketImage, bucket.x, bucket.y);
 		for(Rectangle raindrop: raindrops) {
-			batch.draw(dropImage, raindrop.x, raindrop.y);
+			// batch.draw(dropImage, raindrop.x, raindrop.y); // original: draw texture
+			// Drop-rotate-1: not ideal to have to setPosition in here, but there's only one dropSprite,
+			//                and we have to change its position to the raindrop Rectangle's x,y before each draw.
+			dropSprite.setPosition(raindrop.x, raindrop.y);
+			dropSprite.draw(batch);
 		}
 		batch.end();
 
@@ -99,6 +108,13 @@ public class Drop implements ApplicationListener {
 			}
 		}
 
+		// Drop-rotate-1
+		// Apply rotation to raindrops at end of frame:
+		// Simple version:
+		// One texture, one Sprite;
+		// The Sprite (rotated raindrop) will be drawn multiple times at Rectangle coordinates for each raindrop.
+		// (Original version drew same texture multiple times at on-Screen rectangles.)
+        dropSprite.rotate(15);
 	}
 
 
