@@ -114,7 +114,7 @@ public class Drop implements ApplicationListener {
 		// One texture, one Sprite;
 		// The Sprite (rotated raindrop) will be drawn multiple times at Rectangle coordinates for each raindrop.
 		// (Original version drew same texture multiple times at on-Screen rectangles.)
-        dropSprite.rotate(15);
+        dropSprite.rotate(30);
 	}
 
 
